@@ -1,25 +1,66 @@
-import logo from './logo.svg';
-import './App.css';
+const Total = (props) => {
+  const parts = props.parts
+  const numberOfExercises = () => {
+    let exercises = 0;
+    parts.forEach((part) => {
+      exercises += part.exercises
+    })
+    return exercises;
+  }
 
-function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <p>Number of exercises {numberOfExercises()}</p>
+  )
 }
 
-export default App;
+const Part = (props) => {
+  const part = props.part
+  const exercises = props.exercises
+  return (
+    <p>{part} {exercises}</p>
+  )
+}
+
+const Content = (props) => {
+  const parts = props.parts;
+  return (
+    <div>
+        {parts.map((el, i) => <Part part={el.part} exercises={el.exercises}/>)}
+    </div>
+  )
+}
+
+const Header = (props) => {
+  const course = props.course
+  return (
+    <h1>{course}</h1>
+  )
+}
+
+const App = () => {
+  const course = 'Half Stack application development'
+  const parts = [
+                  {
+                    "part": 'Fundamentals of React',
+                    "exercises": 10
+                  },
+                  {
+                    "part": 'Using props to pass data',
+                    "exercises": 7
+                  },
+                  {
+                    "part": 'State of a component',
+                    "exercises": 14
+                  }
+                ]
+        
+  return (
+    <div>
+      <Header course={course} />
+      <Content parts={parts} />
+      <Total parts={parts} />
+    </div>
+  )
+}
+
+export default App
