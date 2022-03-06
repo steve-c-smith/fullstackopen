@@ -1,6 +1,30 @@
 import { useState } from 'react'
 
-const FeedbackDisplay = ({ label, value }) => <div>{label} {value}</div>
+const StatisticsDisplay = ({ label, value }) => <div>{label} {value}</div>
+
+const Statistics = ({neutral, bad, good}) => {
+  const getTotal = () => good + neutral + bad
+  const getAverage = () => {
+    const total = getTotal()
+    return total ? ((good - bad) / total) : 0
+  }
+  const getPercentPositive = () => {
+    const total = getTotal()
+    return total ? (good / total) * 100 : 0
+  }
+
+  return (
+    <div>
+      <StatisticsDisplay label="good" value={good} />
+      <StatisticsDisplay label="neutral" value={neutral} />
+      <StatisticsDisplay label="bad" value={bad} />
+      <StatisticsDisplay label="all" value={getTotal()} />
+      <StatisticsDisplay label="average" value={getAverage()} />
+      <StatisticsDisplay label="positive" value={getPercentPositive() + "%"} />
+    </div>
+  )
+}
+
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>
 const Header = (props) => <h1>{props.text}</h1>
 
@@ -10,16 +34,6 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
-  const getTotal = () => good + neutral + bad
-  const getAverage = () => {
-    const total = getTotal()
-    return total ? (good - bad / total) : 0
-  }
-  const getPercentPositive = () => {
-    const total = getTotal()
-    return total ? (good / total) * 100 : 0
-  }
-
   return (
     <div>
         <Header text="give feedback" />
@@ -27,12 +41,7 @@ const App = () => {
         <Button onClick={() => {setNeutral(neutral + 1)}} text="neutral" />
         <Button onClick={() => {setBad(bad + 1)}} text="bad" />
         <Header text="statistics" />
-        <FeedbackDisplay label="good" value={good} />
-        <FeedbackDisplay label="neutral" value={neutral} />
-        <FeedbackDisplay label="bad" value={bad} />
-        <FeedbackDisplay label="all" value={getTotal()} />
-        <FeedbackDisplay label="average" value={getAverage()} />
-        <FeedbackDisplay label="positive" value={getPercentPositive() + "%"} />
+        <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   )
 }
