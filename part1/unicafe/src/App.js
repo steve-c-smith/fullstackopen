@@ -9,72 +9,49 @@ const StatisticsLine = ({ label, value }) => {
   )
 }
 
-const Statistics = ({ isFeedbackProvided, neutral, bad, good }) => {
-  const getTotal = () => good + neutral + bad
-  const getAverage = () => {
-    const total = getTotal()
-    return total ? ((good - bad) / total) : 0
+const Statistics = ({ good, neutral, bad }) => {
+  const total = good + neutral + bad
+  if(total === 0){
+    return <p>No feedback given</p>
   }
-  const getPercentPositive = () => {
-    const total = getTotal()
-    return total ? (good / total) * 100 : 0
-  }
+  const getAverage = () => (good - bad) / total
+  const getPercentPositive = () => (good / total) * 100
   
-  if(isFeedbackProvided){
-    return (
-      <table>
-        <tbody>
-          <StatisticsLine label="good" value={good} />
-          <StatisticsLine label="neutral" value={neutral} />
-          <StatisticsLine label="bad" value={bad} />
-          <StatisticsLine label="all" value={getTotal()} />
-          <StatisticsLine label="average" value={getAverage().toFixed(2)} />
-          <StatisticsLine label="positive" value={getPercentPositive().toFixed(2) + "%"} />
-        </tbody>
-      </table>
-    )
-  }
-  return <p>No Feedback Provided</p>
+  return (
+    <table>
+      <tbody>
+        <StatisticsLine label="good" value={good} />
+        <StatisticsLine label="neutral" value={neutral} />
+        <StatisticsLine label="bad" value={bad} />
+        <StatisticsLine label="all" value={total} />
+        <StatisticsLine label="average" value={getAverage().toFixed(2)} />
+        <StatisticsLine label="positive" value={getPercentPositive().toFixed(2) + "%"} />
+      </tbody>
+    </table>
+  )
 }
 
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>
+
 const Header = (props) => <h1>{props.text}</h1>
 
 const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
-  const [isFeedbackProvided, setIsFeedbackProvided] = useState(false)
-
-  const incrementFeedback = (feedbackType) => {
-    switch(feedbackType){
-      case "good":
-        setGood(good + 1)
-        break;
-      case "neutral":
-        setNeutral(neutral + 1)
-        break;
-      case "bad":
-        setBad(bad + 1)
-        break;
-      default:
-        // N/A
-    }
-  }
   
-  const handleFeedback = (feedbackType) => () => {
-    if(!isFeedbackProvided) setIsFeedbackProvided(true);
-    incrementFeedback(feedbackType);
-  }
+  const handleGoodClick = () => setGood(good + 1);
+  const handleNeutralClick = () => setNeutral(neutral + 1);
+  const handleBadClick = () => setBad(bad + 1);
 
   return (
     <div>
         <Header text="give feedback" />
-        <Button onClick={handleFeedback("good")} text="good" />
-        <Button onClick={handleFeedback("neutral")} text="neutral" />
-        <Button onClick={handleFeedback("bad")} text="bad" />
+        <Button onClick={handleGoodClick} text="good" />
+        <Button onClick={handleNeutralClick} text="neutral" />
+        <Button onClick={handleBadClick} text="bad" />
         <Header text="statistics" />
-        <Statistics isFeedbackProvided={isFeedbackProvided} good={good} neutral={neutral} bad={bad} />
+        <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   )
 }
