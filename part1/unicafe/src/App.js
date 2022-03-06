@@ -1,4 +1,5 @@
 import { useState } from 'react'
+
 const FeedbackDisplay = ({ label, value }) => <div>{label} {value}</div>
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>
 const Header = (props) => <h1>{props.text}</h1>
@@ -8,6 +9,16 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
+
+  const getTotal = () => good + neutral + bad
+  const getAverage = () => {
+    const total = getTotal()
+    return total ? (good - bad / total) : 0
+  }
+  const getPercentPositive = () => {
+    const total = getTotal()
+    return total ? (good / total) * 100 : 0
+  }
 
   return (
     <div>
@@ -19,6 +30,9 @@ const App = () => {
         <FeedbackDisplay label="good" value={good} />
         <FeedbackDisplay label="neutral" value={neutral} />
         <FeedbackDisplay label="bad" value={bad} />
+        <FeedbackDisplay label="all" value={getTotal()} />
+        <FeedbackDisplay label="average" value={getAverage()} />
+        <FeedbackDisplay label="positive" value={getPercentPositive() + "%"} />
     </div>
   )
 }
